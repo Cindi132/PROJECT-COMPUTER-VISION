@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi Warna Rambut</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              mahogany: '#C04000',
+              mahoganyDark: '#8B2E00',
+              mahoganySoft: '#DA7635',
+              coksu: '#E3C7A7',
+              coksuLight: '#F6EDE2',
+              coksuDark: '#C4B19C',
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.8s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-mahogany via-mahoganyDark to-mahoganySoft">
+    <div class="bg-coksuLight/95 backdrop-blur-lg shadow-2xl rounded-3xl p-8 w-full max-w-2xl fade-in border-2 border-coksuDark">
+        <!-- Judul -->
+        <div class="flex flex-col items-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-mahoganyDark tracking-tight drop-shadow">Deteksi Warna Rambut</h1>
+            <p class="text-coksuDark text-sm text-center mt-1">Unggah foto & dapatkan hasil deteksi warna rambut secara otomatis.</p>
+        </div>
+        <!-- Layout dua kolom -->
+        <div class="flex flex-col md:flex-row gap-8 items-start w-full">
+            <!-- Kiri: Preview Foto -->
+            <div class="w-full md:w-1/2 flex justify-center items-center">
+                <img
+                    id="preview-img"
+                    src="{% if img_url %}{{ img_url }}{% else %}https://fakeimg.pl/180x240/C04000/E3C7A7/?text=Preview{% endif %}"
+                    alt="Preview"
+                    class="w-44 h-60 object-cover rounded-2xl border-4 border-mahogany shadow ring-2 ring-coksu ring-offset-2 bg-coksuLight transition"
+                />
+            </div>
+            <!-- Kanan: Form & Hasil -->
+            <div class="w-full md:w-1/2 flex flex-col items-center gap-5">
+                <form method="post" enctype="multipart/form-data" class="flex flex-col items-center w-full gap-4">
+                    <label class="w-full flex flex-col items-center px-4 py-4 bg-coksu text-mahoganyDark rounded-xl shadow cursor-pointer transition hover:bg-coksuLight border-2 border-coksuDark">
+                        <span class="mb-2 text-base font-semibold">Pilih Foto</span>
+                        <input type="file" name="file" id="file-input" accept="image/*" class="hidden" required onchange="showPreview(event)">
+                        <span class="text-xs text-mahoganyDark/80">Format: jpg, jpeg, png</span>
+                    </label>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-mahogany to-mahoganySoft text-white rounded-xl font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-200">
+                        Deteksi Warna Rambut
+                    </button>
+                </form>
+                <!-- Hasil Deteksi -->
+                <div class="w-full flex flex-col items-center mt-2">
+                    <p class="text-lg font-medium text-mahogany mb-1">Hasil Deteksi:</p>
+                    <div class="mt-1 text-2xl font-bold text-mahoganyDark drop-shadow">
+                        {% if result %}
+                            {{ result|safe }}
+                        {% else %}
+                            <span class="text-base text-coksuDark font-normal">Belum ada hasil</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="mt-8 text-coksuDark text-sm fade-in">
+        © 2025 • <span class="font-semibold text-mahogany">Deteksi Warna Rambut</span>
+    </footer>
+    <script>
+        // Preview image sebelum submit
+        function showPreview(event) {
+            const input = event.target;
+            const preview = document.getElementById('preview-img');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
